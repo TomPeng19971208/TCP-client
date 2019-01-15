@@ -1,0 +1,52 @@
+#!/bin/bash
+
+port=27993;
+isssl=false;
+
+if [ $# -lt 2 ]; then
+  echo not enough areguments are provided;
+  exit 1;
+fi
+
+until [ $# -eq 0 ]
+do
+#  echo $#
+  case "$1" in
+     -p )
+        port=$2;
+        shift;
+        shift;
+        ;;
+     -s )
+        isssl=true;
+        echo isssl;
+        shift;
+        ;;
+     * )
+     if [ -z $hostname ]; then
+        hostname=$1;
+        #echo hostname is set;
+        shift;
+     else
+        neuid=$1
+        #echo neuid is set;
+        shift;
+     fi
+     ;;
+esac
+done
+
+echo isssl: $isssl 
+echo port:  $port  
+echo host: $hostname
+echo id: $neuid
+
+if [[ -z $hostname || -z $port || -z $isssl || -z $neuid ]]; then
+   echo "bug in script";
+   exit 1;
+fi
+ 
+python project.py $port $isssl $hostname $neuid;
+
+
+ 
