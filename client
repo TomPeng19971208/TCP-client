@@ -56,5 +56,9 @@ fi
  
 python project.py $port $isssl $hostname $neuid >> secret_flag 2>&1
 
+if [ $? -eq 0 ]; then
+   echo success;
+else 
+   echo failed, please check python file
+fi
 
- 
