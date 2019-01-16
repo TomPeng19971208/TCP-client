@@ -1,5 +1,12 @@
 #!/bin/bash
 
+py=`ls | grep project.py`
+if [ py=="" ]; then
+  echo "py file does not exist"
+else
+  chmod +x project.py
+fi 
+
 port=27993;
 isssl=false;
 
