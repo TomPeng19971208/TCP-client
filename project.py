@@ -43,7 +43,7 @@ def main():
              if status:
                  flag = re.sub(r'^cs3700spring2019\s+BYE\s+', "", msg)
                  print(flag)
-                 return flag;
+                 break;
          
          
          #4）receive (cs3700spring2019 BYE [a 64 byte secret flag]\n)
