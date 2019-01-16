@@ -18,6 +18,7 @@ def main():
      global host;
      global server_port
      global neuid
+     global flag
      
      if (len(sys.argv)!=5):
          print("number of arguments is wrong")
@@ -27,23 +28,33 @@ def main():
          host = sys.argv[3];
          server_port = sys.argv[1]
          neuid = sys.argv[4]
-         print("isSSL: " + isSSL)
-         print("port: " + server_port)
-         print("neuid: " + neuid)
-         print("host: " + host)
-         #TO DO:
-         #1) openconnection
-         #2) sendPackage  (see 3700 website)
-         #3) countOccurence() and send back the result in format ‘
-         #（cs3700spring2019 COUNT [#]\n）using sendPackage()
+    #     print("isSSL: " + isSSL)
+    #     print("port: " + server_port)
+    #     print("neuid: " + neuid)
+    #     print("host: " + host)
+         openConnection() 
+         msg = sendPackage('cs3700spring2019 HELLO '+ str(neuid) +'\n')
+         while True:
+             count = countOccurence(msg)
+       #      print("count" + str(count) + '\n')
+             msg = sendPackage('cs3700spring2019 COUNT '+ str(count) +'\n')
+             status = re.match(r'^cs3700spring2019\s+BYE\s+',msg);
+       #      st2 = re.match(r'.*FIND.*',msg);
+             if status:
+                 flag = re.sub(r'^cs3700spring2019\s+BYE\s+', "", msg)
+                 print(flag)
+                 return flag;
+         
+         
          #4）receive (cs3700spring2019 BYE [a 64 byte secret flag]\n)
          #from server and extract secret flag
+         sock.close()
          exit(0)
     
     
 def openConnection():
     try:
-        sock.connect((host, server_port))
+        sock.connect((host, int(server_port)))
         print("successfully connected")
         
     except Exception as error:
@@ -56,18 +67,30 @@ def closeConnection():
     sock.close();
     
 # send data to server, return server's response
+    
 def sendPackage(data):
-    message = data.encode()
-    sock.sendall(message);
-    print("message sent: " + data)
-    resp = sock.recv(256)
+    sock.sendall(data);
+#    print("sent")
+    resp = "";
+    while True:
+        temp = sock.recv(1000);
+       # print(temp)
+        if("\n" in temp):
+            idx = temp.index("\n");
+            #print("-------------------------")
+            resp += temp[0:idx]
+            break;
+        else:
+            resp += temp;
+            #print("received:" + temp + "\n")
+    
+   # print("--------------------------------------------------"+resp)
     return resp;
 
 
 # response is an encoded message in format "FIND C ......"
 #this method find the number of character C in ....
-def countOccurence(response):
-    res = response.decode()
+def countOccurence(res):
     
     #remove FIND and followed spaces
     res = re.sub(r'^cs3700spring2019\s+FIND\s+', "", res)
@@ -80,8 +103,6 @@ def countOccurence(response):
     time = res.count(character)
     return time;
 
-def chec():
-    print("he")
 
     
 #sendPackage('cs3700spring2019 HELLO 001250783'+'\n', 'cbw.sh', 27993)

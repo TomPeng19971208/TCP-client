@@ -1,8 +1,9 @@
 #!/bin/bash
 
 py=`ls | grep project.py`
-if [ py=="" ]; then
+if [[ $py == "" ]]; then
   echo "py file does not exist"
+  exit 1;
 else
   chmod +x project.py
 fi 
@@ -53,7 +54,7 @@ if [[ -z $hostname || -z $port || -z $isssl || -z $neuid ]]; then
    exit 1;
 fi
  
-python project.py $port $isssl $hostname $neuid;
+python project.py $port $isssl $hostname $neuid >> secret_flag 2>&1
 
 
  
