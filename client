@@ -60,5 +60,6 @@ if [ $? -eq 0 ]; then
    echo success;
 else 
    echo failed, please check python file
+   exit 1
 fi
 
